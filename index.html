@@ -15,7 +15,7 @@ header{height:88px;display:flex;align-items:center;justify-content:space-between
 .logo{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:850;letter-spacing:-.04em}.mark{width:38px;height:38px;border-radius:12px;background:#fff;color:#08090c;display:grid;place-items:center}
 nav{display:flex;gap:25px}nav a{font-size:13px;color:#aeb4bf;text-decoration:none}nav a:hover{color:#fff}
 .hero{min-height:680px;display:grid;grid-template-columns:1.12fr .88fr;gap:70px;align-items:center;padding:80px 0 110px}
-.media{position:relative;perspective:1000px}.heroimg{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:30px;border:1px solid var(--line);box-shadow:0 35px 110px #0009;transition:transform .18s}
+.media,.mainart{position:relative;perspective:1000px;isolation:isolate}.heroimg{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:30px;border:1px solid var(--line);box-shadow:0 35px 110px #0009;transition:transform .16s cubic-bezier(.2,.8,.2,1),filter .2s;transform-style:preserve-3d;position:relative;z-index:2}.image-glow{position:absolute;left:0;top:0;inset:7%;border-radius:32px;background:radial-gradient(circle at var(--glow-x,50%) var(--glow-y,45%),rgba(255,255,255,.24),rgba(120,140,180,.10) 35%,transparent 72%);filter:blur(30px);opacity:.72;transform:translateY(18px) scale(.95);z-index:0;transition:opacity .25s,transform .25s}.tilt-card:hover .image-glow{opacity:1;transform:translateY(22px) scale(1.02)}
 .pill{position:absolute;left:18px;bottom:18px;padding:8px 12px;border:1px solid var(--line);background:#0008;backdrop-filter:blur(14px);border-radius:999px;font-size:11px;text-transform:uppercase;letter-spacing:.12em}
 .eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#9da4b0;margin-bottom:16px}
 h1{font-size:clamp(46px,6vw,82px);line-height:.92;letter-spacing:-.07em;margin:0 0 25px}.hero p{color:var(--muted);line-height:1.85;font-size:16px;max-width:530px}
@@ -26,7 +26,7 @@ section{padding:55px 0 95px}.top{display:flex;align-items:end;justify-content:sp
 .panel{display:none}.panel.active{display:block}
 .games{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card{display:block;text-decoration:none;border:1px solid var(--line);background:var(--panel);border-radius:22px;padding:10px;transition:.25s}.card:hover{transform:translateY(-8px);border-color:#fff3;background:#12151ccc}.card img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px;display:block}.info{padding:13px 7px 8px}.title{font-size:17px;font-weight:820;text-transform:uppercase}.desc{color:var(--muted);font-size:13px;line-height:1.5;margin-top:5px}
 .upcoming{display:grid;grid-template-columns:1fr 1fr;gap:17px}.up{min-height:220px;border:1px solid var(--line);border-radius:23px;padding:25px;background:linear-gradient(145deg,#fff0c,#fff002);position:relative;overflow:hidden}.status{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#aeb4bf}.up h3{font-size:25px;margin:18px 0 8px;letter-spacing:-.04em}.up p{color:var(--muted);line-height:1.65;font-size:14px}.bar{height:5px;background:#fff14;border-radius:99px;margin-top:22px;overflow:hidden}.bar span{display:block;height:100%;background:#fff;border-radius:inherit}
-.gfx{display:grid;grid-template-columns:1fr 210px;gap:17px}.mainart{position:relative;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#090a0e;aspect-ratio:16/9}.mainart img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s}.caption{position:absolute;left:18px;right:18px;bottom:18px;padding:14px 15px;border-radius:15px;background:#0009;backdrop-filter:blur(14px);border:1px solid var(--line)}.caption strong{display:block}.caption span{display:block;color:#aab0ba;font-size:12px;margin-top:3px}.thumbs{display:grid;grid-template-rows:repeat(4,1fr);gap:12px}.thumb{border:1px solid var(--line);border-radius:17px;overflow:hidden;padding:0;background:#0b0c10;cursor:pointer}.thumb img{width:100%;height:100%;object-fit:cover;display:block}.thumb.active{border-color:#fff8;box-shadow:0 0 0 2px #fff1}
+.gfx{display:grid;grid-template-columns:1fr 210px;gap:17px}.mainart{position:relative;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#090a0e;aspect-ratio:16/9}.mainart img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s,transform .16s cubic-bezier(.2,.8,.2,1);position:relative;z-index:2;transform-style:preserve-3d}.mainart{box-shadow:0 35px 100px #0008}.mainart .image-glow{inset:8%;border-radius:28px}.mainart:hover .image-glow{opacity:1}.caption{position:absolute;left:18px;right:18px;bottom:18px;padding:14px 15px;border-radius:15px;background:#0009;backdrop-filter:blur(14px);border:1px solid var(--line)}.caption strong{display:block}.caption span{display:block;color:#aab0ba;font-size:12px;margin-top:3px}.thumbs{display:grid;grid-template-rows:repeat(4,1fr);gap:12px}.thumb{border:1px solid var(--line);border-radius:17px;overflow:hidden;padding:0;background:#0b0c10;cursor:pointer}.thumb img{width:100%;height:100%;object-fit:cover;display:block}.thumb.active{border-color:#fffc;box-shadow:0 0 0 2px #fff1,0 10px 35px #fff1}.thumb:hover{border-color:#fff5;transform:translateY(-2px)}
 .contact{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:28px;border:1px solid var(--line);border-radius:23px;background:#fff0c}.contact h2{margin:0;font-size:26px}.contact p{color:var(--muted);font-size:13px;margin:7px 0 0}
 footer{border-top:1px solid var(--line);padding:30px 0 45px;color:#737a86;font-size:12px;display:flex;justify-content:space-between}
 .reveal{opacity:0;transform:translateY(22px);animation:reveal .7s ease forwards}.d2{animation-delay:.12s}.d3{animation-delay:.22s}.d4{animation-delay:.32s}@keyframes reveal{to{opacity:1;transform:none}}
@@ -42,7 +42,7 @@ footer{border-top:1px solid var(--line);padding:30px 0 45px;color:#737a86;font-s
 
 <main id="home">
 <section class="hero">
-<div class="media reveal" id="media"><img class="heroimg" src="assets/hero.png" alt="OBBY BUT YOU ARE WITH CLONES"><div class="pill">Featured Experience</div></div>
+<div class="media reveal tilt-card" id="media"><div class="image-glow"></div><img class="heroimg" src="Assets/hero.png" alt="OBBY BUT YOU ARE WITH CLONES"><div class="pill">Featured Experience</div></div>
 <div class="reveal d2"><div class="eyebrow">ZYREX STUDIOS / ROBLOX</div><h1>OBBY BUT YOU ARE WITH CLONES.</h1><p>A featured Roblox experience from Zyrex Studios. Jump in, survive the chaos, and see how far you can make it.</p><div class="meta"><span class="tag">ROBLOX EXPERIENCE</span><span class="tag">FEATURED</span><span class="tag">PLAY NOW</span></div><a class="btn" href="https://www.roblox.com/games/113850844866673/OBBY-BUT-YOU-ARE-WITH-CLONES" target="_blank" rel="noopener">PLAY ON ROBLOX ↗</a></div>
 </section>
 
@@ -50,19 +50,19 @@ footer{border-top:1px solid var(--line);padding:30px 0 45px;color:#737a86;font-s
 <div class="top reveal"><div><h2>Games & Works</h2><p>Switch between our Roblox catalogue and visual work.</p></div><div class="switch"><button class="active" data-tab="roblox" type="button">Roblox</button><button data-tab="gfx" type="button">GFX Works</button></div></div>
 
 <div class="panel active" id="roblox"><div class="games">
-<a class="card reveal d2" href="https://www.roblox.com/games/138590507775487/High-Cortisol-Obby" target="_blank" rel="noopener"><img src="assets/game1.png" alt="High Cortisol Obby"><div class="info"><div class="title">High Cortisol Obby</div><div class="desc">A fast-paced Roblox obby experience.</div></div></a>
-<a class="card reveal d3" href="https://www.roblox.com/games/140231064559721/Fragmented" target="_blank" rel="noopener"><img src="assets/game2.png" alt="Fragmented"><div class="info"><div class="title">Fragmented</div><div class="desc">A Roblox experience from Zyrex Studios.</div></div></a>
-<a class="card reveal d4" href="https://www.roblox.com/games/78515341506665/ALTER-EGO" target="_blank" rel="noopener"><img src="assets/game3.png" alt="ALTER EGO"><div class="info"><div class="title">ALTER EGO</div><div class="desc">Step into another Zyrex experience.</div></div></a>
+<a class="card reveal d2" href="https://www.roblox.com/games/138590507775487/High-Cortisol-Obby" target="_blank" rel="noopener"><img src="Assets/game1.png" alt="High Cortisol Obby"><div class="info"><div class="title">High Cortisol Obby</div><div class="desc">A fast-paced Roblox obby experience.</div></div></a>
+<a class="card reveal d3" href="https://www.roblox.com/games/140231064559721/Fragmented" target="_blank" rel="noopener"><img src="Assets/game2.png" alt="Fragmented"><div class="info"><div class="title">Fragmented</div><div class="desc">A Roblox experience from Zyrex Studios.</div></div></a>
+<a class="card reveal d4" href="https://www.roblox.com/games/78515341506665/ALTER-EGO" target="_blank" rel="noopener"><img src="Assets/game3.png" alt="ALTER EGO"><div class="info"><div class="title">ALTER EGO</div><div class="desc">Step into another Zyrex experience.</div></div></a>
 </div></div>
 
 <div class="panel" id="gfx">
 <div class="gfx">
-<div class="mainart"><img id="mainGfx" src="assets/gfx1.png" alt="GFX Work 1"><div class="caption"><strong id="gfxTitle">GFX WORK 01</strong><span>Zyrex Studios / Graphics</span></div></div>
+<div class="mainart tilt-card" id="gfxCard"><div class="image-glow"></div><img id="mainGfx" src="Assets/gfx1.png" alt="GFX Work 1"><div class="caption"><strong id="gfxTitle">GFX WORK 01</strong><span>Zyrex Studios / Graphics</span></div></div>
 <div class="thumbs">
-<button class="thumb active" data-i="0" type="button"><img src="assets/gfx1.png" alt="GFX 1"></button>
-<button class="thumb" data-i="1" type="button"><img src="assets/gfx2.png" alt="GFX 2"></button>
-<button class="thumb" data-i="2" type="button"><img src="assets/gfx3.png" alt="GFX 3"></button>
-<button class="thumb" data-i="3" type="button"><img src="assets/gfx4.png" alt="GFX 4"></button>
+<button class="thumb active" data-i="0" type="button"><img src="Assets/gfx1.png" alt="GFX 1"></button>
+<button class="thumb" data-i="1" type="button"><img src="Assets/gfx2.png" alt="GFX 2"></button>
+<button class="thumb" data-i="2" type="button"><img src="Assets/gfx3.png" alt="GFX 3"></button>
+<button class="thumb" data-i="3" type="button"><img src="Assets/gfx4.png" alt="GFX 4"></button>
 </div>
 </div>
 </div>
@@ -97,13 +97,26 @@ if(!reduce.matches){
  let tx=innerWidth*.5,ty=innerHeight*.35,x=tx,y=ty,raf;
  function loop(){x+=(tx-x)*.075;y+=(ty-y)*.075;glow.style.left=x+"px";glow.style.top=y+"px";grid.style.transform=`perspective(720px) rotateX(58deg) translate(${(x/innerWidth-.5)*18}px,calc(-10% + ${(y/innerHeight-.5)*12}px))`;raf=requestAnimationFrame(loop)}
  addEventListener("pointermove",e=>{tx=e.clientX;ty=e.clientY},{passive:true});loop();
- media.addEventListener("pointermove",e=>{const r=media.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;media.querySelector(".heroimg").style.transform=`rotateY(${px*4}deg) rotateX(${py*-4}deg) scale(1.015)`});
- media.addEventListener("pointerleave",()=>media.querySelector(".heroimg").style.transform="");
+ const tiltCards = [...document.querySelectorAll(".tilt-card")];
+ tiltCards.forEach(card=>{
+   const image = card.querySelector("img");
+   card.addEventListener("pointermove", e=>{
+     const r=card.getBoundingClientRect();
+     const px=(e.clientX-r.left)/r.width-.5;
+     const py=(e.clientY-r.top)/r.height-.5;
+     image.style.transform=`perspective(900px) rotateY(${px*7}deg) rotateX(${py*-7}deg) scale(1.025)`;
+     card.style.setProperty("--glow-x",`${(px+.5)*100}%`);
+     card.style.setProperty("--glow-y",`${(py+.5)*100}%`);
+   });
+   card.addEventListener("pointerleave",()=>{
+     image.style.transform="";
+   });
+ });
  addEventListener("pagehide",()=>cancelAnimationFrame(raf),{once:true});
 }
 const buttons=[...document.querySelectorAll(".switch button")];
 buttons.forEach(b=>b.addEventListener("click",()=>{buttons.forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.tab))}));
-const gfx=["assets/gfx1.png","assets/gfx2.png","assets/gfx3.png","assets/gfx4.png"],main=document.getElementById("mainGfx"),title=document.getElementById("gfxTitle"),thumbs=[...document.querySelectorAll(".thumb")];let current=0,timer;
+const gfx=["Assets/gfx1.png","Assets/gfx2.png","Assets/gfx3.png","Assets/gfx4.png"],main=document.getElementById("mainGfx"),title=document.getElementById("gfxTitle"),thumbs=[...document.querySelectorAll(".thumb")];let current=0,timer;
 function show(i){current=(i+4)%4;main.style.opacity="0";setTimeout(()=>{main.src=gfx[current];title.textContent=`GFX WORK ${String(current+1).padStart(2,"0")}`;main.style.opacity="1"},130);thumbs.forEach((t,n)=>t.classList.toggle("active",n===current))}
 function restart(){clearInterval(timer);timer=setInterval(()=>show(current+1),4500)}
 thumbs.forEach(t=>t.addEventListener("click",()=>{show(+t.dataset.i);restart()}));restart();
