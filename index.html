@@ -1,57 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Zyrex Studios</title>
-
-    <style>
-        body {
-            margin: 0;
-            min-height: 100vh;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            background: #0b0b0f;
-        }
-
-        .game {
-            width: min(90%, 800px);
-            cursor: pointer;
-
-            border-radius: 20px;
-            overflow: hidden;
-
-            transition: 0.2s ease;
-        }
-
-        .game:hover {
-            transform: scale(1.03);
-        }
-
-        .game:active {
-            transform: scale(0.98);
-        }
-
-        .game img {
-            width: 100%;
-            display: block;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zyrex Studios</title>
+<meta name="description" content="Zyrex Studios — Roblox games and experiences.">
+<style>
+:root{--bg:#07080c;--text:#f5f7fb;--muted:#9ca3af;--line:rgba(255,255,255,.10);--glass:rgba(12,14,20,.68)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--text);background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+.background{position:fixed;inset:0;z-index:-3;overflow:hidden;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.07),transparent 35%),#07080c}
+.grid{position:absolute;inset:-20%;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:55px 55px;transform:perspective(700px) rotateX(58deg) translateY(-10%);transform-origin:center top}
+.orb{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.13),transparent 68%);filter:blur(12px);transform:translate3d(-50%,-50%,0);left:50%;top:35%;pointer-events:none}
+.noise{position:absolute;inset:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
+.container{width:min(1180px,92%);margin:auto}
+header{display:flex;align-items:center;justify-content:space-between;padding:26px 0}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em}
+.logo-mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#fff;color:#08090c;box-shadow:0 8px 35px rgba(255,255,255,.12)}
+nav{display:flex;gap:24px}nav a{color:#b9bec8;text-decoration:none;font-size:14px;transition:.2s}nav a:hover{color:#fff}
+.hero{min-height:72vh;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:70px;padding:70px 0 90px}
+.hero-image-wrap{position:relative}.hero-image{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:28px;border:1px solid var(--line);box-shadow:0 30px 100px rgba(0,0,0,.45);transition:.25s}
+.hero-image-wrap:hover .hero-image{transform:translateY(-5px) scale(1.01);border-color:rgba(255,255,255,.22)}
+.hero-badge{position:absolute;left:18px;bottom:18px;padding:9px 13px;border:1px solid var(--line);background:rgba(0,0,0,.55);backdrop-filter:blur(14px);border-radius:999px;font-size:12px;color:#ddd}
+.eyebrow{color:#aeb4bf;font-size:13px;text-transform:uppercase;letter-spacing:.18em;margin-bottom:16px}
+h1{font-size:clamp(44px,6vw,82px);line-height:.95;letter-spacing:-.065em;margin:0 0 24px}
+.hero p{color:var(--muted);font-size:17px;line-height:1.8;max-width:520px}
+.button{display:inline-flex;align-items:center;justify-content:center;margin-top:22px;min-height:48px;padding:0 20px;border-radius:13px;background:#fff;color:#07080c;text-decoration:none;font-weight:750;transition:.2s}
+.button:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(255,255,255,.12)}
+section{padding:55px 0 90px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:26px}.section-head h2{margin:0;font-size:34px;letter-spacing:-.04em}.section-head p{margin:0;color:var(--muted);font-size:14px}
+.games{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.game{display:block;color:inherit;text-decoration:none;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(15px);border-radius:22px;padding:10px;transition:.25s}
+.game:hover{transform:translateY(-8px);border-color:rgba(255,255,255,.25);background:rgba(20,22,30,.82)}
+.game img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px;display:block}
+.game-info{padding:13px 7px 7px}.game-title{font-weight:750;font-size:17px}.game-desc{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.5}
+footer{border-top:1px solid var(--line);padding:30px 0 45px;color:#777e89;font-size:13px;display:flex;justify-content:space-between;gap:20px}
+.reveal{opacity:0;transform:translateY(24px);animation:reveal .8s ease forwards}.reveal.d2{animation-delay:.12s}.reveal.d3{animation-delay:.24s}
+@keyframes reveal{to{opacity:1;transform:none}}
+@media(max-width:850px){nav{display:none}.hero{grid-template-columns:1fr;gap:38px;padding-top:40px}.hero-copy{order:2}.hero-image-wrap{order:1}.games{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.container{width:min(92%,520px)}.hero{min-height:auto;padding:35px 0 65px}h1{font-size:48px}.hero p{font-size:15px}.games{grid-template-columns:1fr}.section-head{display:block}.section-head p{margin-top:7px}footer{display:block}footer span{display:block;margin-top:7px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
 </head>
-
 <body>
-
-    <a
-        class="game"
-        href="https://www.roblox.com/games/113850844866673/OBBY-BUT-YOU-ARE-WITH-CLONES"
-        target="_blank"
-    >
-        <img src="noFilter.png" alt="Play Roblox Game">
-    </a>
-
+<div class="background" aria-hidden="true"><div class="grid" id="grid"></div><div class="orb" id="orb"></div><div class="noise"></div></div>
+<div class="container">
+<header><div class="logo"><div class="logo-mark">Z</div><span>Zyrex Studios</span></div><nav><a href="#home">Home</a><a href="#games">Games</a><a href="#about">About</a></nav></header>
+<main id="home">
+<section class="hero">
+<div class="hero-image-wrap reveal"><img class="hero-image" src="assets/hero.svg" alt="Featured Zyrex Studios game"><div class="hero-badge">Featured Experience</div></div>
+<div class="hero-copy reveal d2"><div class="eyebrow">Zyrex Studios</div><h1>Games made to be remembered.</h1><p>Welcome to Zyrex Studios. Explore our Roblox experiences, discover new worlds, and jump straight into the games we are building.</p><a class="button" href="https://www.roblox.com/games/YOUR_FEATURED_GAME_ID" target="_blank" rel="noopener">Play on Roblox ↗</a></div>
+</section>
+<section id="games"><div class="section-head reveal"><div><h2>Our Games</h2><p>Click a game to open it on Roblox.</p></div></div>
+<div class="games">
+<a class="game reveal d2" href="https://www.roblox.com/games/YOUR_GAME_ID_1" target="_blank" rel="noopener"><img src="assets/game1.svg" alt="Game 1 thumbnail"><div class="game-info"><div class="game-title">Your Game One</div><div class="game-desc">Your first Roblox experience.</div></div></a>
+<a class="game reveal d3" href="https://www.roblox.com/games/YOUR_GAME_ID_2" target="_blank" rel="noopener"><img src="assets/game2.svg" alt="Game 2 thumbnail"><div class="game-info"><div class="game-title">Your Game Two</div><div class="game-desc">Another experience from Zyrex Studios.</div></div></a>
+<a class="game reveal d3" href="https://www.roblox.com/games/YOUR_GAME_ID_3" target="_blank" rel="noopener"><img src="assets/game3.svg" alt="Game 3 thumbnail"><div class="game-info"><div class="game-title">Your Game Three</div><div class="game-desc">More adventures are coming.</div></div></a>
+</div></section>
+<section id="about"><div class="section-head reveal"><div><h2>About Zyrex</h2><p>Small studio. Big ideas.</p></div></div><p class="reveal d2" style="color:var(--muted);max-width:760px;font-size:16px;line-height:1.8">Zyrex Studios is an independent Roblox game studio focused on creating polished, fun, and memorable experiences.</p></section>
+</main>
+<footer><span>© 2026 Zyrex Studios</span><span>Built for Roblox players.</span></footer>
+</div>
+<script>
+(()=>{const orb=document.getElementById("orb"),grid=document.getElementById("grid"),reduce=window.matchMedia("(prefers-reduced-motion: reduce)");if(!orb||!grid||reduce.matches)return;let tx=innerWidth*.5,ty=innerHeight*.35,x=tx,y=ty,raf;function animate(){x+=(tx-x)*.075;y+=(ty-y)*.075;orb.style.left=x+"px";orb.style.top=y+"px";const dx=(x/innerWidth-.5)*18,dy=(y/innerHeight-.5)*12;grid.style.transform=`perspective(700px) rotateX(58deg) translate(${dx}px,calc(-10% + ${dy}px))`;raf=requestAnimationFrame(animate)}addEventListener("pointermove",e=>{tx=e.clientX;ty=e.clientY},{passive:true});animate();addEventListener("pagehide",()=>cancelAnimationFrame(raf),{once:true})})();
+</script>
 </body>
 </html>
