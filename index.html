@@ -33,7 +33,8 @@ section{padding:55px 0 90px}.section-head{display:flex;justify-content:space-bet
 .game{display:block;color:inherit;text-decoration:none;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(15px);border-radius:22px;padding:10px;transition:.25s}
 .game:hover{transform:translateY(-8px);border-color:rgba(255,255,255,.25);background:rgba(20,22,30,.82)}
 .game img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px;display:block}
-.game-info{padding:13px 7px 7px}.game-title{font-weight:750;font-size:17px}.game-desc{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.5}
+.game-info{padding:13px 7px 7px}.game-title{font-weight:750;font-size:17px}
+.game-title{text-transform:uppercase}.game-desc{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.5}
 footer{border-top:1px solid var(--line);padding:30px 0 45px;color:#777e89;font-size:13px;display:flex;justify-content:space-between;gap:20px}
 .reveal{opacity:0;transform:translateY(24px);animation:reveal .8s ease forwards}.reveal.d2{animation-delay:.12s}.reveal.d3{animation-delay:.24s}
 @keyframes reveal{to{opacity:1;transform:none}}
@@ -49,13 +50,33 @@ footer{border-top:1px solid var(--line);padding:30px 0 45px;color:#777e89;font-s
 <main id="home">
 <section class="hero">
 <div class="hero-image-wrap reveal"><img class="hero-image" src="assets/hero.svg" alt="Featured Zyrex Studios game"><div class="hero-badge">Featured Experience</div></div>
-<div class="hero-copy reveal d2"><div class="eyebrow">Zyrex Studios</div><h1>Games made to be remembered.</h1><p>Welcome to Zyrex Studios. Explore our Roblox experiences, discover new worlds, and jump straight into the games we are building.</p><a class="button" href="https://www.roblox.com/games/YOUR_FEATURED_GAME_ID" target="_blank" rel="noopener">Play on Roblox ↗</a></div>
+<div class="hero-copy reveal d2"><div class="eyebrow">Zyrex Studios</div><h1>Games made to be remembered.</h1><p>Welcome to Zyrex Studios. Explore our Roblox experiences, discover new worlds, and jump straight into the games we are building.</p><a class="button" href="https://www.roblox.com/games/113850844866673/OBBY-BUT-YOU-ARE-WITH-CLONES" target="_blank" rel="noopener">Play on Roblox ↗</a></div>
 </section>
 <section id="games"><div class="section-head reveal"><div><h2>Our Games</h2><p>Click a game to open it on Roblox.</p></div></div>
 <div class="games">
-<a class="game reveal d2" href="https://www.roblox.com/games/113850844866673/OBBY-BUT-YOU-ARE-WITH-CLONES" target="_blank" rel="noopener"><img src="assets/game1.svg" alt="Game 1 thumbnail"><div class="game-info"><div class="game-title">Your Game One</div><div class="game-desc">Your first Roblox experience.</div></div></a>
-<a class="game reveal d3" href="https://www.roblox.com/games/138590507775487/High-Cortisol-Obby"><img src="assets/game2.svg" alt="Game 2 thumbnail"><div class="game-info"><div class="game-title">Your Game Two</div><div class="game-desc">Another experience from Zyrex Studios.</div></div></a>
-<a class="game reveal d3" href="https://www.roblox.com/games/YOUR_GAME_ID_3" target="_blank" rel="noopener"><img src="assets/game3.svg" alt="Game 3 thumbnail"><div class="game-info"><div class="game-title">Your Game Three</div><div class="game-desc">More adventures are coming.</div></div></a>
+<a class="game reveal d2" href="https://www.roblox.com/games/138590507775487/High-Cortisol-Obby" target="_blank" rel="noopener">
+    <img src="assets/game1.png" alt="High Cortisol Obby thumbnail">
+    <div class="game-info">
+        <div class="game-title">High Cortisol Obby</div>
+        <div class="game-desc">A Roblox obby experience from Zyrex Studios.</div>
+    </div>
+</a>
+
+<a class="game reveal d3" href="https://www.roblox.com/games/140231064559721/Fragmented" target="_blank" rel="noopener">
+    <img src="assets/game2.png" alt="Fragmented thumbnail">
+    <div class="game-info">
+        <div class="game-title">Fragmented</div>
+        <div class="game-desc">A Roblox experience from Zyrex Studios.</div>
+    </div>
+</a>
+
+<a class="game reveal d3" href="https://www.roblox.com/games/78515341506665/ALTER-EGO" target="_blank" rel="noopener">
+    <img src="assets/game3.png" alt="ALTER EGO thumbnail">
+    <div class="game-info">
+        <div class="game-title">ALTER EGO</div>
+        <div class="game-desc">A Roblox experience from Zyrex Studios.</div>
+    </div>
+</a>
 </div></section>
 <section id="about"><div class="section-head reveal"><div><h2>About Zyrex</h2><p>Small studio. Big ideas.</p></div></div><p class="reveal d2" style="color:var(--muted);max-width:760px;font-size:16px;line-height:1.8">Zyrex Studios is an independent Roblox game studio focused on creating polished, fun, and memorable experiences.</p></section>
 </main>
