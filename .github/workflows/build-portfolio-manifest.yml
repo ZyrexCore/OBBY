@@ -1,0 +1,55 @@
+name: Build Portfolio Manifest
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/**'
+      - '.github/workflows/build-portfolio-manifest.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate manifest
+        shell: python
+        run: |
+          import json, re
+          from pathlib import Path
+
+          assets = Path('assets')
+          entries = []
+          pattern = re.compile(r'^(game|games|gfx|graphic|graphics|model|models)[ _-]*(\d+)\.(png|jpe?g|webp|gif|avif)$', re.I)
+
+          for p in sorted(assets.iterdir(), key=lambda x: x.name.lower()):
+              if not p.is_file():
+                  continue
+              m = pattern.match(p.name)
+              if not m:
+                  continue
+              prefix, number, ext = m.groups()
+              prefix = prefix.lower()
+              typ = 'game' if prefix.startswith('game') else ('gfx' if prefix.startswith('gfx') or prefix.startswith('graphic') else 'model')
+              entries.append({
+                  'type': typ,
+                  'number': int(number),
+                  'title': f"{'Game' if typ == 'game' else 'GFX' if typ == 'gfx' else 'Model'} {int(number)}",
+                  'file': p.name
+              })
+
+          entries.sort(key=lambda x: (x['type'], x['number'], x['file'].lower()))
+          Path('portfolio-manifest.json').write_text(json.dumps(entries, indent=2), encoding='utf-8')
+
+      - name: Commit manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add portfolio-manifest.json
+          git diff --cached --quiet || git commit -m "Update portfolio asset manifest"
+          git push
