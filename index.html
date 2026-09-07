@@ -416,8 +416,8 @@ footer{
         <h2 class="section-title">My Roblox Games</h2>
       </div>
       <div class="section-sub">
-        Games are loaded from <code>assets/games/</code>. Each game can have its own cover,
-        description and Play button through a tiny JSON file.
+        Games are detected automatically from <code>assets/</code> by filenames such as <code>Game1.png</code>,
+        <code>Game2.jpg</code>, <code>Game3.webp</code>, etc.
       </div>
     </div>
     <div id="gamesGrid" class="grid">
@@ -433,7 +433,7 @@ footer{
       </div>
       <div class="section-sub">
         Posters, thumbnails, banners, photo edits and anything else visual.
-        Upload an image into <code>assets/gfx/</code> and it appears automatically.
+        Upload files named <code>GFX1.png</code>, <code>GFX2.jpg</code>, etc. into <code>assets/</code> and they appear automatically.
       </div>
     </div>
     <div id="gfxGrid" class="grid gfx-grid">
@@ -449,7 +449,7 @@ footer{
       </div>
       <div class="section-sub">
         A dedicated gallery for your 3D work. Transparent PNG renders look especially good here.
-        Upload them into <code>assets/models/</code>.
+        Upload them as <code>Model1.png</code>, <code>Model2.webp</code>, etc. into <code>assets/</code>.
       </div>
     </div>
     <div id="modelsGrid" class="grid model-grid">
@@ -479,10 +479,14 @@ const CONFIG = {
   OWNER: "ZyrexCore",
   REPO: "OBBY",
   BRANCH: "main",
-  GAMES_PATH: "assets/games",
-  GFX_PATH: "assets/gfx",
-  MODELS_PATH: "assets/models",
-  RAW_BASE: "https://raw.githubusercontent.com"
+  ASSETS_PATH: "assets",
+
+  // Add your Roblox links here. "1" = Game1, "2" = Game2, etc.
+  GAME_LINKS: {
+    "1": "#",
+    "2": "#",
+    "3": "#"
+  }
 };
 
 const IMAGE_EXTENSIONS = /\.(png|jpe?g|webp|gif|avif)$/i;
@@ -589,105 +593,138 @@ async function loadGallery(path, elementId, label, countId){
 }
 
 /*
-  GAMES:
-  Recommended structure:
+  FLAT ASSETS AUTO-SCANNER
+  ========================
+  Put all portfolio images directly inside:
 
-  assets/
-    games/
-      games.json
-      my-game-cover.png
-      another-game-cover.jpg
+      assets/
+        Game1.png
+        Game2.png
+        GFX1.png
+        GFX2.jpg
+        Model1.png
+        Model2.webp
+        ...
 
-  games.json:
-  [
-    {
-      "title": "My First Game",
-      "description": "A fast Roblox experience...",
-      "image": "my-game-cover.png",
-      "playUrl": "https://www.roblox.com/games/123456789/My-Game"
-    }
-  ]
-
-  The image name can also be omitted. If omitted, the first image
-  in assets/games/ is used.
+  The filename automatically determines the section and number.
 */
-async function loadGames(){
-  const element = document.getElementById("gamesGrid");
+
+function parsePortfolioFile(item){
+  if(!isImage(item)) return null;
+
+  const base = item.name.replace(/\.[^/.]+$/, "");
+  const match = base.match(/^(game|games|gfx|graphic|graphics|model|models)[ _-]*(\d+)$/i);
+  if(!match) return null;
+
+  const prefix = match[1].toLowerCase();
+  const number = Number(match[2]);
+
+  let type;
+  if(prefix.startsWith("game")) type = "game";
+  else if(prefix.startsWith("gfx") || prefix.startsWith("graphic")) type = "gfx";
+  else type = "model";
+
+  return {
+    ...item,
+    type,
+    number,
+    title:
+      type === "game" ? `Game ${number}` :
+      type === "gfx" ? `GFX ${number}` :
+      `Model ${number}`
+  };
+}
+
+function sortByNumber(a,b){
+  return a.number - b.number || a.name.localeCompare(b.name, undefined, {numeric:true});
+}
+
+function makeGalleryCard(item, label, square=false){
+  return `
+    <article class="card gallery-card reveal">
+      <div class="card-media" ${square ? 'style="aspect-ratio:1/1"' : ''}>
+        <img src="${escapeHTML(imageUrl(item))}"
+             alt="${escapeHTML(item.title)}"
+             loading="lazy"
+             decoding="async"
+             onclick="openLightbox(this.src, this.alt)"
+             onerror="this.closest('.card').remove()">
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">${escapeHTML(label)}</div>
+        <h3>${escapeHTML(item.title)}</h3>
+      </div>
+    </article>`;
+}
+
+function makeGameCard(item){
+  const link = CONFIG.GAME_LINKS[String(item.number)] || "#";
+  const playButton = link === "#"
+    ? `<span class="btn" style="opacity:.55;cursor:not-allowed">Play Link Not Set</span>`
+    : `<a class="btn primary" href="${escapeHTML(link)}" target="_blank" rel="noopener">▶ Play Game</a>`;
+
+  return `
+    <article class="card reveal">
+      <div class="card-media">
+        <img src="${escapeHTML(imageUrl(item))}"
+             alt="${escapeHTML(item.title)}"
+             loading="lazy"
+             decoding="async"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">ROBLOX GAME</div>
+        <h3>${escapeHTML(item.title)}</h3>
+        <p>Roblox experience by ZyrexCore.</p>
+        <div class="card-actions">${playButton}</div>
+      </div>
+    </article>`;
+}
+
+function emptyMessage(label, example){
+  return `<div class="empty">
+    No ${escapeHTML(label)} found yet.<br><br>
+    Upload files such as <code>${example}</code> into <code>assets/</code>.
+  </div>`;
+}
+
+async function loadPortfolio(){
+  const gamesGrid = document.getElementById("gamesGrid");
+  const gfxGrid = document.getElementById("gfxGrid");
+  const modelsGrid = document.getElementById("modelsGrid");
 
   try{
-    const items = await githubFolder(CONFIG.GAMES_PATH);
-    const images = items.filter(isImage);
+    const items = await githubFolder(CONFIG.ASSETS_PATH);
+    const portfolio = items.map(parsePortfolioFile).filter(Boolean);
 
-    let games = null;
-
-    const jsonItem = items.find(x => x.type === "file" && x.name.toLowerCase() === "games.json");
-
-    if(jsonItem){
-      try{
-        const res = await fetch(jsonItem.download_url || rawUrl(jsonItem.path));
-        games = await res.json();
-      }catch(e){
-        console.warn("games.json could not be read:", e);
-      }
-    }
-
-    if(!Array.isArray(games) || games.length === 0){
-      // Automatic fallback: every image becomes a game card.
-      games = images.map((image, index) => ({
-        title: cleanTitle(image.name),
-        description: "Roblox experience — add this game to games.json for a custom description and Play button.",
-        image: image.name,
-        playUrl: "#"
-      }));
-    }
+    const games = portfolio.filter(x => x.type === "game").sort(sortByNumber);
+    const gfx = portfolio.filter(x => x.type === "gfx").sort(sortByNumber);
+    const models = portfolio.filter(x => x.type === "model").sort(sortByNumber);
 
     document.getElementById("gameCount").textContent = games.length;
+    document.getElementById("gfxCount").textContent = gfx.length;
+    document.getElementById("modelCount").textContent = models.length;
 
-    if(!games.length){
-      element.innerHTML = `<div class="empty">
-        No games yet.<br>
-        Add a cover image and <code>games.json</code> to <code>${CONFIG.GAMES_PATH}/</code>.
-      </div>`;
-      return;
-    }
+    gamesGrid.innerHTML = games.length
+      ? games.map(makeGameCard).join("")
+      : emptyMessage("games", "Game1.png");
 
-    const imageMap = new Map(images.map(x => [x.name.toLowerCase(), imageUrl(x)]));
+    gfxGrid.innerHTML = gfx.length
+      ? gfx.map(x => makeGalleryCard(x, "GFX")).join("")
+      : emptyMessage("GFX works", "GFX1.png");
 
-    element.innerHTML = games.map(game => {
-      const title = game.title || "Untitled Game";
-      const description = game.description || "";
-      const image = game.image ? (
-        imageMap.get(String(game.image).toLowerCase()) ||
-        rawUrl(`${CONFIG.GAMES_PATH}/${game.image}`)
-      ) : (images[0] ? imageUrl(images[0]) : "");
-
-      const playUrl = game.playUrl || "#";
-      const playButton = playUrl === "#"
-        ? `<span class="btn" style="opacity:.55;cursor:not-allowed">Coming Soon</span>`
-        : `<a class="btn primary" href="${escapeHTML(playUrl)}" target="_blank" rel="noopener">▶ Play Game</a>`;
-
-      return `
-        <article class="card reveal">
-          <div class="card-media">
-            ${image ? `<img src="${escapeHTML(image)}"
-              alt="${escapeHTML(title)}"
-              loading="lazy"
-              decoding="async"
-              onerror="this.style.display='none'">` : ""}
-          </div>
-          <div class="card-body">
-            <div class="card-kicker">ROBLOX GAME</div>
-            <h3>${escapeHTML(title)}</h3>
-            <p>${escapeHTML(description)}</p>
-            <div class="card-actions">${playButton}</div>
-          </div>
-        </article>`;
-    }).join("");
+    modelsGrid.innerHTML = models.length
+      ? models.map(x => makeGalleryCard(x, "3D MODEL", true)).join("")
+      : emptyMessage("3D models", "Model1.png");
 
     activateReveal();
   }catch(error){
     document.getElementById("gameCount").textContent = "0";
-    showError(element, error.message);
+    document.getElementById("gfxCount").textContent = "0";
+    document.getElementById("modelCount").textContent = "0";
+    showError(gamesGrid, error.message);
+    showError(gfxGrid, error.message);
+    showError(modelsGrid, error.message);
   }
 }
 
@@ -737,9 +774,7 @@ window.addEventListener("pointermove", e => {
 document.getElementById("year").textContent = new Date().getFullYear();
 
 activateReveal();
-loadGames();
-loadGallery(CONFIG.GFX_PATH, "gfxGrid", "GFX", "gfxCount");
-loadGallery(CONFIG.MODELS_PATH, "modelsGrid", "3D MODEL", "modelCount");
+loadPortfolio();
 </script>
 </body>
 </html>
