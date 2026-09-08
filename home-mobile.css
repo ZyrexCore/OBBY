@@ -2,9 +2,9 @@
 @media(max-width:600px){
   .preview-scroll-wrap .grid{padding:0;gap:0;scroll-snap-type:x mandatory}
   .preview-scroll-wrap .grid>.card{flex:0 0 100%;width:100%;max-width:none;scroll-snap-align:start}
-  .preview-scroll-btn{display:grid;top:42%;width:46px;height:46px;border:2px solid #fff;border-radius:12px;background:rgba(5,5,5,.92);color:#fff;font-size:30px;font-weight:900;line-height:1;place-items:center;cursor:pointer;box-shadow:0 0 0 2px rgba(255,255,255,.12),0 8px 28px rgba(0,0,0,.65),0 0 24px rgba(255,255,255,.12);backdrop-filter:blur(10px);transition:.2s;z-index:8}
+  .preview-scroll-btn{display:grid;top:42%;width:46px;height:46px;border:2px solid #fff;border-radius:12px;background:#fff;color:#050505;font-size:30px;font-weight:900;line-height:1;place-items:center;cursor:pointer;box-shadow:0 0 0 2px rgba(255,255,255,.12),0 8px 28px rgba(0,0,0,.65);transition:.2s;z-index:8}
   .preview-scroll-btn:hover{background:#fff;color:#050505;transform:scale(1.06)}
-  .preview-scroll-btn:disabled{opacity:.25;border-color:#777;color:#777;box-shadow:none;transform:none;cursor:default}
+  .preview-scroll-btn:disabled{background:#fff;color:#050505;opacity:.3;border-color:#fff;box-shadow:none;transform:none;cursor:default}
   .preview-scroll-prev{left:8px}
   .preview-scroll-next{right:8px}
 }
