@@ -1,0 +1,9 @@
+/* Homepage mobile preview carousel: one preview at a time. Desktop is unchanged. */
+.preview-scroll-btn{display:none}
+@media(max-width:600px){
+  .preview-scroll-wrap .grid{padding-left:0;padding-right:0;gap:0;scroll-snap-type:x mandatory}
+  .preview-scroll-wrap .grid>.card{flex:0 0 100%;width:100%;max-width:none;scroll-snap-align:start}
+  .preview-scroll-btn{display:grid;top:42%;width:42px;height:42px;font-size:27px}
+  .preview-scroll-prev{left:8px}
+  .preview-scroll-next{right:8px}
+}
