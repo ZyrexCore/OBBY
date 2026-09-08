@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'assets/**'
+      - 'game-links.json'
       - '.github/workflows/build-portfolio-manifest.yml'
   workflow_dispatch:
 
@@ -17,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate manifest from portfolio assets and Roblox links
+      - name: Generate manifest
         shell: python
         run: |
           import json, re
@@ -28,14 +29,7 @@ jobs:
           assets = Path('assets')
           entries = []
           pattern = re.compile(r'^(gfx|graphic|graphics|model|models)[ _-]*(\d+)\.(png|jpe?g|webp|gif|avif)$', re.I)
-
-          # Add Roblox game links here. The site will automatically fetch the
-          # Roblox name, description and experience thumbnails from each link.
-          game_config = {
-              1: {'placeId': '138590507775487', 'url': 'https://www.roblox.com/games/138590507775487/High-Cortisol-Obby'},
-              2: {'placeId': '113850844866673', 'url': 'https://www.roblox.com/games/113850844866673/OBBY-BUT-YOU-ARE-WITH-CLONES'},
-              3: {'placeId': '', 'url': '#'}
-          }
+          links = json.loads(Path('game-links.json').read_text(encoding='utf-8')) if Path('game-links.json').exists() else {}
 
           def get_json(url):
               req = Request(url, headers={'User-Agent': 'ZyrexCore-Portfolio/1.0'})
@@ -54,66 +48,40 @@ jobs:
                   game = (data.get('data') or [None])[0]
                   if not game:
                       return None
-                  thumbs_url = 'https://thumbnails.roblox.com/v1/games/multiget/thumbnails?' + urlencode({
-                      'universeIds': uid,
-                      'countPerUniverse': 10,
-                      'defaults': 'true',
-                      'size': '768x432',
-                      'format': 'Png',
-                      'isCircular': 'false'
-                  })
-                  thumbs_data = get_json(thumbs_url)
-                  thumbs = []
+                  q = urlencode({'universeIds': uid, 'countPerUniverse': 10, 'defaults': 'true', 'size': '768x432', 'format': 'Png', 'isCircular': 'false'})
+                  thumbs_data = get_json(f'https://thumbnails.roblox.com/v1/games/multiget/thumbnails?{q}')
+                  thumbs=[]
                   for row in thumbs_data.get('data', []):
                       for t in row.get('thumbnails', []):
-                          image = t.get('imageUrl')
-                          if image and image not in thumbs:
-                              thumbs.append(image)
-                  return {
-                      'universeId': uid,
-                      'name': game.get('name') or '',
-                      'description': game.get('description') or '',
-                      'thumbnails': thumbs
-                  }
+                          image=t.get('imageUrl')
+                          if image and image not in thumbs: thumbs.append(image)
+                  return {'universeId':uid,'title':game.get('name') or '', 'description':game.get('description') or '', 'thumbnails':thumbs}
               except Exception as exc:
                   print(f'Roblox lookup failed for {place_id}: {exc}')
                   return None
 
-          # Games come ONLY from the links above; no game1.png/game2.png files needed.
-          for number, cfg in sorted(game_config.items()):
-              entry = {
-                  'type': 'game',
-                  'number': number,
-                  'title': f'Game {number}',
-                  'url': cfg.get('url', '#'),
-                  'placeId': cfg.get('placeId', ''),
-                  'description': '',
-                  'thumbnails': []
-              }
-              meta = roblox_game(entry['placeId'])
-              if meta:
-                  entry.update(meta)
+          # Every non-empty link becomes a game. Empty links remain as a pending card.
+          for key, url in sorted(links.items(), key=lambda x:int(x[0])):
+              number=int(key)
+              url=(url or '').strip()
+              match=re.search(r'/games/(\d+)', url)
+              place_id=match.group(1) if match else ''
+              entry={'type':'game','number':number,'title':f'Game {number}','url':url or '#','placeId':place_id,'description':'','thumbnails':[]}
+              meta=roblox_game(place_id)
+              if meta: entry.update(meta)
               entries.append(entry)
 
-          # GFX and models still use numbered local assets.
-          for p in sorted(assets.iterdir(), key=lambda x: x.name.lower()):
-              if not p.is_file():
-                  continue
-              m = pattern.match(p.name)
-              if not m:
-                  continue
-              prefix, number, ext = m.groups()
-              typ = 'gfx' if prefix.lower().startswith(('gfx','graphic')) else 'model'
-              number = int(number)
-              entries.append({
-                  'type': typ,
-                  'number': number,
-                  'title': f'{"GFX" if typ == "gfx" else "Model"} {number}',
-                  'file': p.name
-              })
+          # GFX and 3D models remain local numbered assets.
+          for p in sorted(assets.iterdir(), key=lambda x:x.name.lower()):
+              if not p.is_file(): continue
+              m=pattern.match(p.name)
+              if not m: continue
+              prefix,number,_=m.groups(); number=int(number)
+              typ='gfx' if prefix.lower().startswith(('gfx','graphic')) else 'model'
+              entries.append({'type':typ,'number':number,'title':f'{"GFX" if typ=="gfx" else "Model"} {number}','file':p.name})
 
-          entries.sort(key=lambda x: (x['type'], x['number']))
-          Path('portfolio-manifest.json').write_text(json.dumps(entries, indent=2, ensure_ascii=False), encoding='utf-8')
+          entries.sort(key=lambda x:(x['type'],x['number']))
+          Path('portfolio-manifest.json').write_text(json.dumps(entries,indent=2,ensure_ascii=False),encoding='utf-8')
 
       - name: Commit manifest
         run: |
