@@ -1,12 +1,12 @@
-/* Homepage mobile preview navigation: no horizontal page/card scrolling. */
+/* Homepage mobile preview navigation: preserve the original carousel look without moving the page. */
 @media(max-width:600px){
   .preview-scroll-wrap{position:relative;width:100%;min-width:0;overflow:hidden}
   .preview-scroll-wrap .grid{display:block;padding:0;gap:0;overflow:visible;scroll-snap-type:none;scroll-behavior:auto}
   .preview-scroll-wrap .grid>.card{width:100%;max-width:none;margin:0}
   .preview-scroll-wrap .grid>.card[hidden]{display:none!important}
-  .preview-scroll-btn{display:grid;position:absolute;top:42%;width:46px;height:46px;border:2px solid #fff;border-radius:12px;background:#fff;color:#050505;font-size:30px;font-weight:900;line-height:1;place-items:center;cursor:pointer;box-shadow:0 0 0 2px rgba(255,255,255,.12),0 8px 28px rgba(0,0,0,.65);transition:.2s;z-index:8}
-  .preview-scroll-btn:hover{background:#fff;color:#050505;transform:scale(1.06)}
-  .preview-scroll-btn:disabled{background:#fff;color:#050505;opacity:.3;border-color:#fff;box-shadow:none;transform:none;cursor:default}
+  .preview-scroll-btn{display:grid;position:absolute;z-index:4;top:42%;width:46px;height:46px;border:1px solid rgba(255,255,255,.3);border-radius:50%;background:rgba(5,5,5,.92);color:#fff;font-size:29px;line-height:1;place-items:center;cursor:pointer;box-shadow:0 0 0 2px rgba(255,255,255,.08),0 8px 30px rgba(0,0,0,.65);backdrop-filter:blur(8px);transition:.2s}
+  .preview-scroll-btn:hover{background:#fff;color:#050505;border-color:#fff}
+  .preview-scroll-btn:disabled{opacity:.28;cursor:default;box-shadow:none}
   .preview-scroll-prev{left:8px}
   .preview-scroll-next{right:8px}
 }
