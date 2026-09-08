@@ -22,10 +22,39 @@ jobs:
         run: |
           import json, re
           from pathlib import Path
+          from urllib.request import Request, urlopen
 
           assets = Path('assets')
           entries = []
           pattern = re.compile(r'^(game|games|gfx|graphic|graphics|model|models)[ _-]*(\d+)\.(png|jpe?g|webp|gif|avif)$', re.I)
+
+          game_config = {
+              1: {'placeId': '138590507775487', 'url': 'https://www.roblox.com/games/138590507775487/High-Cortisol-Obby'},
+              2: {'placeId': '113850844866673', 'url': 'https://www.roblox.com/games/113850844866673/OBBY-BUT-YOU-ARE-WITH-CLONES'},
+              3: {'placeId': '', 'url': '#'}
+          }
+
+          def get_json(url):
+              req = Request(url, headers={'User-Agent': 'ZyrexCore-Portfolio/1.0'})
+              with urlopen(req, timeout=15) as response:
+                  return json.loads(response.read().decode('utf-8'))
+
+          def roblox_meta(place_id):
+              if not place_id:
+                  return None
+              try:
+                  universe = get_json(f'https://apis.roblox.com/universes/v1/places/{place_id}/universe')
+                  uid = universe.get('universeId')
+                  if not uid:
+                      return None
+                  data = get_json(f'https://games.roblox.com/v1/games?universeIds={uid}')
+                  game = (data.get('data') or [None])[0]
+                  if not game:
+                      return None
+                  return {'name': game.get('name'), 'description': game.get('description', ''), 'universeId': uid}
+              except Exception as exc:
+                  print(f'Roblox metadata lookup failed for {place_id}: {exc}')
+                  return None
 
           for p in sorted(assets.iterdir(), key=lambda x: x.name.lower()):
               if not p.is_file():
@@ -35,16 +64,29 @@ jobs:
                   continue
               prefix, number, ext = m.groups()
               prefix = prefix.lower()
+              number = int(number)
               typ = 'game' if prefix.startswith('game') else ('gfx' if prefix.startswith('gfx') or prefix.startswith('graphic') else 'model')
-              entries.append({
+              entry = {
                   'type': typ,
-                  'number': int(number),
-                  'title': f"{'Game' if typ == 'game' else 'GFX' if typ == 'gfx' else 'Model'} {int(number)}",
+                  'number': number,
+                  'title': f"{'Game' if typ == 'game' else 'GFX' if typ == 'gfx' else 'Model'} {number}",
                   'file': p.name
-              })
+              }
+              if typ == 'game':
+                  cfg = game_config.get(number, {})
+                  entry['placeId'] = cfg.get('placeId', '')
+                  entry['url'] = cfg.get('url', '#')
+                  meta = roblox_meta(entry['placeId'])
+                  if meta:
+                      entry['title'] = meta.get('name') or entry['title']
+                      entry['description'] = meta.get('description') or ''
+                      entry['universeId'] = meta.get('universeId')
+                  else:
+                      entry['description'] = ''
+              entries.append(entry)
 
           entries.sort(key=lambda x: (x['type'], x['number'], x['file'].lower()))
-          Path('portfolio-manifest.json').write_text(json.dumps(entries, indent=2), encoding='utf-8')
+          Path('portfolio-manifest.json').write_text(json.dumps(entries, indent=2, ensure_ascii=False), encoding='utf-8')
 
       - name: Commit manifest
         run: |
