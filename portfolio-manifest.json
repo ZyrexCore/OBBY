@@ -29,11 +29,15 @@
   {
     "type": "game",
     "number": 3,
-    "title": "Game 3",
-    "url": "#",
-    "placeId": "",
-    "description": "",
-    "thumbnails": []
+    "title": "Testing Server 1",
+    "url": "https://www.roblox.com/games/87308704183587/Testing-Server-1",
+    "placeId": "87308704183587",
+    "description": "LF NEW DEVS TO HELP OUT",
+    "thumbnails": [
+      "https://tr.rbxcdn.com/180DAY-78243ba284d0b1103c39fde32a2a052f/768/432/GameMediaItem4/Png/noFilter"
+    ],
+    "name": "Testing Server 1",
+    "universeId": 7709902819
   },
   {
     "type": "gfx",
