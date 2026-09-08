@@ -26,58 +26,51 @@ jobs:
           from urllib.parse import urlencode
           from urllib.request import Request, urlopen
 
-          assets = Path('assets')
-          entries = []
-          pattern = re.compile(r'^(gfx|graphic|graphics|model|models)[ _-]*(\d+)\.(png|jpe?g|webp|gif|avif)$', re.I)
-          links = json.loads(Path('game-links.json').read_text(encoding='utf-8')) if Path('game-links.json').exists() else {}
+          assets=Path('assets')
+          entries=[]
+          pattern=re.compile(r'^(gfx|graphic|graphics|model|models)[ _-]*(\d+)\.(png|jpe?g|webp|gif|avif)$',re.I)
+          links=json.loads(Path('game-links.json').read_text(encoding='utf-8')) if Path('game-links.json').exists() else {}
 
           def get_json(url):
-              req = Request(url, headers={'User-Agent': 'ZyrexCore-Portfolio/1.0'})
-              with urlopen(req, timeout=20) as response:
+              req=Request(url,headers={'User-Agent':'ZyrexCore-Portfolio/1.0'})
+              with urlopen(req,timeout=20) as response:
                   return json.loads(response.read().decode('utf-8'))
 
           def roblox_game(place_id):
-              if not place_id:
-                  return None
+              if not place_id:return None
               try:
-                  u = get_json(f'https://apis.roblox.com/universes/v1/places/{place_id}/universe')
-                  uid = u.get('universeId')
-                  if not uid:
-                      return None
-                  data = get_json(f'https://games.roblox.com/v1/games?universeIds={uid}')
-                  game = (data.get('data') or [None])[0]
-                  if not game:
-                      return None
-                  q = urlencode({'universeIds': uid, 'countPerUniverse': 10, 'defaults': 'true', 'size': '768x432', 'format': 'Png', 'isCircular': 'false'})
-                  thumbs_data = get_json(f'https://thumbnails.roblox.com/v1/games/multiget/thumbnails?{q}')
+                  u=get_json(f'https://apis.roblox.com/universes/v1/places/{place_id}/universe')
+                  uid=u.get('universeId')
+                  if not uid:return None
+                  data=get_json(f'https://games.roblox.com/v1/games?universeIds={uid}')
+                  game=(data.get('data') or [None])[0]
+                  if not game:return None
+                  q=urlencode({'universeIds':uid,'countPerUniverse':10,'defaults':'true','size':'768x432','format':'Png','isCircular':'false'})
+                  td=get_json(f'https://thumbnails.roblox.com/v1/games/multiget/thumbnails?{q}')
                   thumbs=[]
-                  for row in thumbs_data.get('data', []):
-                      for t in row.get('thumbnails', []):
+                  for row in td.get('data',[]):
+                      for t in row.get('thumbnails',[]):
                           image=t.get('imageUrl')
-                          if image and image not in thumbs: thumbs.append(image)
-                  return {'universeId':uid,'title':game.get('name') or '', 'description':game.get('description') or '', 'thumbnails':thumbs}
+                          if image and image not in thumbs:thumbs.append(image)
+                  return {'name':game.get('name') or '','description':game.get('description') or '','universeId':uid,'thumbnails':thumbs}
               except Exception as exc:
                   print(f'Roblox lookup failed for {place_id}: {exc}')
                   return None
 
-          # Every non-empty link becomes a game. Empty links remain as a pending card.
-          for key, url in sorted(links.items(), key=lambda x:int(x[0])):
-              number=int(key)
-              url=(url or '').strip()
-              match=re.search(r'/games/(\d+)', url)
-              place_id=match.group(1) if match else ''
+          for key,url in sorted(links.items(),key=lambda x:int(x[0])):
+              number=int(key);url=(url or '').strip();m=re.search(r'/games/(\d+)',url);place_id=m.group(1) if m else ''
               entry={'type':'game','number':number,'title':f'Game {number}','url':url or '#','placeId':place_id,'description':'','thumbnails':[]}
               meta=roblox_game(place_id)
-              if meta: entry.update(meta)
+              if meta:
+                  entry.update(meta)
+                  entry['title']=meta.get('name') or entry['title']
               entries.append(entry)
 
-          # GFX and 3D models remain local numbered assets.
-          for p in sorted(assets.iterdir(), key=lambda x:x.name.lower()):
-              if not p.is_file(): continue
+          for p in sorted(assets.iterdir(),key=lambda x:x.name.lower()):
+              if not p.is_file():continue
               m=pattern.match(p.name)
-              if not m: continue
-              prefix,number,_=m.groups(); number=int(number)
-              typ='gfx' if prefix.lower().startswith(('gfx','graphic')) else 'model'
+              if not m:continue
+              prefix,number,_=m.groups();number=int(number);typ='gfx' if prefix.lower().startswith(('gfx','graphic')) else 'model'
               entries.append({'type':typ,'number':number,'title':f'{"GFX" if typ=="gfx" else "Model"} {number}','file':p.name})
 
           entries.sort(key=lambda x:(x['type'],x['number']))
